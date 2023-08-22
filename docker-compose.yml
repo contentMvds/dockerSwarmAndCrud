@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  mongoUser:
+    image: mongo
+    volumes:
+      - ./mongo-data-user:/data/db
+    networks:
+      - mynetwork
+
+  mongoProduct:
+    image: mongo
+    volumes:
+      - ./mongo-data-product:/data/db
+    networks:
+      - mynetwork
+
+  mongoOrder:
+    image: mongo
+    volumes:
+      - ./mongo-data-order:/data/db
+    networks:
+      - mynetwork
+
+  userService:
+    build:
+      context: ./services/userService
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongoUser
+    networks:
+      - mynetwork
+
+  productService:
+    build:
+      context: ./services/productService
+    ports:
+      - "3002:3002"
+    depends_on:
+      - mongoProduct
+    networks:
+      - mynetwork
+
+  orderService:
+    build:
+      context: ./services/orderService
+    ports:
+      - "3003:3003"
+    depends_on:
+      - mongoOrder
+    networks:
+      - mynetwork
+
+  apiGateway:
+    build:
+      context: ./services/apiGateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - userService
+      - productService
+      - orderService
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: overlay
