@@ -1,0 +1,94 @@
+http:
+  port: 8080
+
+admin:
+  port: 9876
+
+apiEndpoints:
+  product:
+    host: localhost
+    paths:
+      - '/product/*'
+
+  order:
+    host: localhost
+    paths:
+      - '/order/*'
+
+  user:
+    host: localhost
+    paths:
+      - '/user/*'
+
+  inventory:
+    host: localhost
+    paths:
+      - '/inventory/*'
+
+serviceEndpoints:
+  product:
+    url: 'http://localhost:3001'
+  order:
+    url: 'http://localhost:3002'
+  user:
+    url: 'http://localhost:3003'
+  inventory:
+    url: 'http://localhost:3004'
+
+policies:
+  - jwt
+  - basic-auth
+
+pipelines:
+  product:
+    apiEndpoints:
+      - product
+    policies:
+      - jwt:
+          - action:
+              secretOrPublicKey: 'your-jwt-secret'
+        phase: auth
+      - proxy:
+          - action:
+              serviceEndpoint: product
+        phase: proxy
+
+  order:
+    apiEndpoints:
+      - order
+    policies:
+      - jwt:
+          - action:
+              secretOrPublicKey: 'your-jwt-secret'
+        phase: auth
+      - proxy:
+          - action:
+              serviceEndpoint: order
+        phase: proxy
+
+  user:
+    apiEndpoints:
+      - user
+    policies:
+      - basic-auth
+      - jwt:
+          - action:
+              secretOrPublicKey: 'your-jwt-secret'
+        phase: auth
+      - proxy:
+          - action:
+              serviceEndpoint: user
+        phase: proxy
+
+  inventory:
+    apiEndpoints:
+      - inventory
+    policies:
+      - jwt:
+          - action:
+              secretOrPublicKey: 'your-jwt-secret'
+        phase: auth
+      - proxy:
+          - action:
+              serviceEndpoint: inventory
+        phase: proxy

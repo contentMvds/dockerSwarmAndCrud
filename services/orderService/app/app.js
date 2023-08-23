@@ -9,7 +9,6 @@ app.use(bodyParser.json());
 mongoose.connect(config.mongoURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true
 });
 
 const orderRoutes = require('./routes/orderRoutes');

@@ -1,4 +1,4 @@
-const mongoose = require('../config/db');
+const mongoose = require('../../config/db');
 
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
